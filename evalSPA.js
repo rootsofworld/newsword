@@ -51,6 +51,15 @@ const appInfo = require('./app_config.json');
 //const sample = require('./sample.json')
 
 
+nodejieba.load({
+    dict: nodejieba.DEFAULT_DICT,
+    hmmDict: nodejieba.DEFAULT_HMM_DICT,
+    userDict: 'node_modules/nodejieba/dict/dict.txt.big',
+    idfDict: nodejieba.DEFAULT_IDF_DICT,
+    stopWordDict: nodejieba.DEFAULT_STOP_WORD_DICT,
+  });
+
+
 function evalSPA(option, appInfo) {
 
     let result = {}
@@ -141,13 +150,13 @@ function evalSPA(option, appInfo) {
                 //console.log(source);
                 result.data.map((post) => {
 
-                    post.sourceArticle.raw = extractArticle(post.link)
-                    post.sourceArticle.words = nodejieba.extract(post.sourceArticle.raw,5)
-                    post.messageWords = nodejieba.extract(post.message,5)
+                    post.sourceArticle.raw = extractArticle(post.link).body
+                    post.sourceArticle.words = nodejieba.cut(post.sourceArticle.raw)
+                    post.messageWords = nodejieba.cut(post.message)
 
                 })
                 
-                fs.writeFile('result.json', JSON.stringify(result), 'utf8', (err) => {
+                fs.writeFile(`result-${option.target}.json`, JSON.stringify(result), 'utf8', (err) => {
                     if(err) throw err;
                 })
             }
@@ -162,28 +171,29 @@ function evalSPA(option, appInfo) {
      * @param {Function} callback  //When extraction is done
      */
     function extractArticle( url ){
-        let pList
+        let source = {}
          rp(url)
             .then((body) => {
 
                 $ = cheerio.load(body)
-                pList = $('p')
-                
+                source.body = body
+                source.pList = $('p')
+                source.pList
                 //let mainSection = $(`.${className}`)
-                console.log(pList.length)
-                for(let i = 0; i < pList.length; i++){
+                console.log(source.pList.length)
+                /*for(let i = 0; i < source.pList.length; i++){
                     if(i % 2 === 0)
-                        console.log(chalk.yellowBright(pList[i].children[0].data))
-                        console.log(chalk.redBright(pList[i].children[0].data))
-                }
-                return pList
+                        console.log(chalk.yellowBright(source.pList[i].children[0].data))
+                        console.log(chalk.redBright(source.pList[i].children[0].data))
+                }*/
+                return source
             })
-        return pList
+        return source
     }
 }
 
 function punctuactionFilter(str){
-    
+
 }
 
 function stopwordFilter(str){
@@ -193,9 +203,9 @@ function stopwordFilter(str){
 
 
 evalSPA({
-    target: "466505160192708",
-    since: "2017-10-01",
-    until: "2017-10-07",
+    target: "136626779700062",
+    since: "2017-10-22",
+    until: "2017-10-25",
     limit: 100
 },appInfo)
 
