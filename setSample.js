@@ -7,10 +7,7 @@
 const fs = require('fs')
 const configFileName = "sample.json"
 
-let newTarget = {
-    pageName : process.argv[2],
-    page_id : process.argv[3]
-}
+const target = process.argv[2]
 
 ////////////MAIN////////////
 if(fs.existsSync( configFileName )){
@@ -23,8 +20,8 @@ if(fs.existsSync( configFileName )){
         content = JSON.parse(content)
 
 
-        let checkIfExist = content.sample.find(( el ) => {
-                return el.pageName === newTarget.pageName
+        let checkIfExist = content.targetList.find(( el ) => {
+                return el === target
             })
 
         if(checkIfExist !== undefined){
@@ -32,7 +29,7 @@ if(fs.existsSync( configFileName )){
             return false
         }else{
             console.log("Target is not in the file, let write it. ")
-            content.sample.push(newTarget)
+            content.targetList.push(target)
             fs.writeFile(configFileName, JSON.stringify(content),'utf8', (err) => {
                 if(err) throw err
             })
@@ -44,13 +41,9 @@ if(fs.existsSync( configFileName )){
 
     console.log("File not Found, creating ...")
     let content = {
-        sample:[
-            {
-                pageName : newTarget.pageName,
-                page_id : newTarget.page_id
-            }
-        ]
+        targetList : []
     }
+    content.targetList.push(target)
     fs.writeFile(configFileName, JSON.stringify(content),'utf8', (err) => {
         if(err) throw err
         console.log(`Config file created, Named: sample.json\nInsert:\n\tName: ${newTarget.pageName} \n\tID: ${newTarget.page_id}

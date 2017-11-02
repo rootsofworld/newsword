@@ -23,20 +23,20 @@
  *      until
  *      data : [
  *          {
- *              date : Post's creation time
- *              post : {
- *                  raw : Raw content of post
- *                  words : Count of words Array
- *              }
- *              article : {      // From Crawler
+ *              ...Existed Info
+ * 
+ *              sourceArticle : {      // From Crawler
  *                  raw : Raw content of article
  *                  words : Count of words Array
  *              }
- *              @param {Number} similarity
+ *              messageWords : []
  *          }
  *      ]
- *      post_count : data.length
- *      @param {Number} averageSimilarity
+ * 
+ *       typeCount : {
+ *         video,photo,link             
+ *       }
+ *      
  * } 
  */
 const rp = require('request-promise');
@@ -62,9 +62,15 @@ nodejieba.load({
 
 function evalSPA(option, appInfo) {
 
+    let postCounter = {
+        current : 0,
+        total : 0
+    }
+    let noPost = false
     let result = {}
-    
-    let postsTypeCount = {
+    let bodyPool = [] //Crawled body put in this first
+
+    result.typeCount = {
         video : 0,
         photo : 0,
         link : 0
@@ -81,50 +87,43 @@ function evalSPA(option, appInfo) {
         `
     }
    
-
     const graphUrl = generateUrlWithoutAccesstoken( option, appInfo )
-    //console.log(graphUrl)
-
-    /*request(graphUrl, (err, res) => {
-        fs.writeFile(`posts-${new Date(graphCall.since).valueOf()}-${new Date(graphCall.until).valueOf()}.json`, JSON.stringify(JSON.parse(res.body)),'utf8',(err) => {
-            if(err) throw err;
-        })
-        console.log(JSON.stringify(JSON.parse(res.body)));
-    })*/
-
-    function modifyPostData(post){
-        
-        post.sourceArticle = {
-            raw : "",
-            words : []
-        }
-        post.messageWords = []
-        return post
-    }
 
     result.data = []
     rp( graphUrl )
         .then( ( res ) => {
 
+
             res = JSON.parse(res);
+            if(typeof res.post === undefined){
+                noPost = true
+                return false
+            }
             result.page_name = res.name
             result.page_id = res.id
             result.since = option.since
             result.until = option.until
 
             res.posts.data.forEach((post) => {
+
+                post.sourceArticle = {
+                    raw : "",
+                    words : []
+                }
+                post.messageWords = []
+
                 if(post.type === 'video'){
 
-                    postsTypeCount.video++
+                    result.typeCount.video++
 
                 }else if(post.type === 'photo'){
 
-                    postsTypeCount.photo++
+                    result.typeCount.photo++
 
                 }else if(post.type === 'link'){
 
-                    postsTypeCount.link++
-                    result.data.push(modifyPostData(post))
+                    result.typeCount.link++
+                    result.data.push(post)
 
                 }else{
 
@@ -132,65 +131,87 @@ function evalSPA(option, appInfo) {
                 }
             })
             
+
             console.log(chalk.yellow("TypeCounter: "))
-            console.log(chalk.yellowBright(`\tVideo : ${postsTypeCount.video}`))
-            console.log(chalk.yellowBright(`\tPhoto : ${postsTypeCount.photo}`))
-            console.log(chalk.yellowBright(`\tLink : ${postsTypeCount.link}`))
+            console.log(chalk.yellowBright(`\tVideo : ${result.typeCount.video}`))
+            console.log(chalk.yellowBright(`\tPhoto : ${result.typeCount.photo}`))
+            console.log(chalk.yellowBright(`\tLink : ${result.typeCount.link}`))
 
             console.log(result)
             console.log(result.data.length)
-            
+            postCounter.total = result.data.length
+
             return result
 
         })
         .then(( result ) => {
-            if(result.data.length < 1){
+
+            if(!result){
+
+                console.log("There is no post from your option")
+                return false
+
+            }else if(result.data.length < 1){
+
                 console.log("Don't have link-type post!!")
+
             }else{
-                //console.log(source);
-                result.data.map((post) => {
-
-
-                    post.sourceArticle.raw = extractArticle(post.link).body
-                    post.sourceArticle.words = nodejieba.cut(punctuactionFilter(post.sourceArticle.raw))
-                    post.messageWords = nodejieba.cut(punctuactionFilter(post.message))
-
-                })
                 
-                fs.writeFile(`result-${option.target}.json`, JSON.stringify(result), 'utf8', (err) => {
-                    if(err) throw err;
+                result.data.forEach((post) => {
+
+                    extractArticle(post.link, post.id, post.created_time, postCounter, bodyPool)
+                    post.messageWords = nodejieba.extract(punctuactionFilter(post.message),10)
+
                 })
+
             }
         })
 
-
-
-    /**
-     * 
-     * @param {String} body //html data from request
-     * @param {String} className //main article section's className
-     * @param {Function} callback  //When extraction is done
-     */
-    function extractArticle( url ){
-        let source = {}
-         return rp(url)
-            .then((body) => {
-
-                $ = cheerio.load(body)
-                source.body = body
-                source.pList = $('p')
-                source.pList
-                //let mainSection = $(`.${className}`)
-                console.log(source.pList.length)
-                /*for(let i = 0; i < source.pList.length; i++){
-                    if(i % 2 === 0)
-                        console.log(chalk.yellowBright(source.pList[i].children[0].data))
-                        console.log(chalk.redBright(source.pList[i].children[0].data))
-                }*/
-                return source
+        function finishCrawlingHandler(pool) {
+            pool = pool.sort((post1,post2) => {
+                return post2.created_time - post1.created_time
             })
-        return source
-    }
+            console.log(pool.length)
+
+            result.data.forEach((post,i) => {
+                post.sourceArticle.raw = pool[i].textFromTagP
+                post.sourceArticle.words = nodejieba.extract(punctuactionFilter(post.sourceArticle.raw),10)
+            })
+
+            fs.writeFile(`result-${option.target}.json`, JSON.stringify(result), 'utf8', (err) => {
+                    if(err) throw err;
+            })
+        }
+    
+    
+        function extractArticle( url, id, time, postCounter, pool ){
+        
+          rp(url)
+            .then((body) => {
+                let created_time = new Date(time)
+                $ = cheerio.load(body)
+                pList = $('p')
+                //let mainSection = $(`.${className}`)
+                //console.log(source.pList.length)
+                let tmpArray = []
+                for(let i = 0; i < pList.length; i++){
+                   if(!pList[i].children[0]) {
+                       tmpArray.push("")
+                       continue
+                   }
+                   tmpArray.push(pList[i].children[0].data)
+                }
+                pool.push({
+                    id: id,
+                    created_time: created_time.valueOf(),
+                    doneAt: Date.now(),
+                    body: body,
+                    textFromTagP: tmpArray.join('\n')
+                })
+                postCounter.current++
+                if(postCounter.current === postCounter.total ) finishCrawlingHandler(pool)
+            })
+        }
 }
 
 function punctuactionFilter(str){
