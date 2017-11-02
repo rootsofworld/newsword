@@ -56,7 +56,7 @@ nodejieba.load({
     hmmDict: nodejieba.DEFAULT_HMM_DICT,
     userDict: 'node_modules/nodejieba/dict/dict.txt.big',
     idfDict: nodejieba.DEFAULT_IDF_DICT,
-    stopWordDict: nodejieba.DEFAULT_STOP_WORD_DICT,
+    stopWordDict: 'node_modules/nodejieba/dict/stop_words.utf8',
   });
 
 
@@ -150,9 +150,10 @@ function evalSPA(option, appInfo) {
                 //console.log(source);
                 result.data.map((post) => {
 
+
                     post.sourceArticle.raw = extractArticle(post.link).body
-                    post.sourceArticle.words = nodejieba.cut(post.sourceArticle.raw)
-                    post.messageWords = nodejieba.cut(post.message)
+                    post.sourceArticle.words = nodejieba.cut(punctuactionFilter(post.sourceArticle.raw))
+                    post.messageWords = nodejieba.cut(punctuactionFilter(post.message))
 
                 })
                 
@@ -172,7 +173,7 @@ function evalSPA(option, appInfo) {
      */
     function extractArticle( url ){
         let source = {}
-         rp(url)
+         return rp(url)
             .then((body) => {
 
                 $ = cheerio.load(body)
@@ -193,12 +194,12 @@ function evalSPA(option, appInfo) {
 }
 
 function punctuactionFilter(str){
-
+    if(!str) return
+    str = str.replace(/(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?/g,"")
+    str = str.replace(/[\ |\~|\`|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\-|\—|\－|\」|\「|\！|\（|\）|\。|\，|\：|\、|\_|\+|\=|\||\\|\[|\]|\{|\}|\;|\:|\"|\'|\,|\<|\.|\>|\/|\?|\？|\n]/g,"")
+    return str
 }
 
-function stopwordFilter(str){
-    
-}
 
 
 
