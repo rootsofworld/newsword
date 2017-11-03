@@ -163,8 +163,10 @@ function evalSPA(option, appInfo) {
                 }else{
                     
                     result.data.forEach((post) => {
-
+                        //console.log(post.link)
+                        
                         extractArticle(post.link, post.id, post.created_time, postCounter, bodyPool)
+                        
                         post.messageWords = nodejieba.extract(punctuactionFilter(post.message),10)
 
                     })
@@ -185,7 +187,7 @@ function evalSPA(option, appInfo) {
                     post.sourceArticle.words = nodejieba.extract(punctuactionFilter(post.sourceArticle.raw),10)
                 })
 
-                fs.writeFile(`result-${option.page_id}.json`, JSON.stringify(result), 'utf8', (err) => {
+                fs.writeFile(`data/result-${option.page_id}.json`, JSON.stringify(result), 'utf8', (err) => {
                         if(err) throw err;
                         resolve(result)
                 })
@@ -193,34 +195,42 @@ function evalSPA(option, appInfo) {
         
         
             function extractArticle( url, id, time, postCounter, pool ){
-            
-            rp(url)
-                .then((body) => {
-                    let created_time = new Date(time)
-                    $ = cheerio.load(body)
-                    pList = $('p')
-                    //let mainSection = $(`.${className}`)
-                    //console.log(source.pList.length)
-                    let tmpArray = []
-                    for(let i = 0; i < pList.length; i++){
-                    if(!pList[i].children[0]) {
-                        tmpArray.push("")
-                        continue
+                let option = {
+                    method: 'GET',
+                    url: url,
+                    headers: {
+                        'user-agent' : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.78 Safari/537.36'
                     }
-                    tmpArray.push(pList[i].children[0].data)
-                    }
-                    pool.push({
-                        id: id,
-                        created_time: created_time.valueOf(),
-                        doneAt: Date.now(),
-                        body: body,
-                        textFromTagP: tmpArray.join('\n')
+                }
+                rp(option)
+                    .then((body) => {
+                        let created_time = new Date(time)
+                        $ = cheerio.load(body)
+                        pList = $('p')
+                        //let mainSection = $(`.${className}`)
+                        //console.log(source.pList.length)
+                        let tmpArray = []
+                        for(let i = 0; i < pList.length; i++){
+                        if(!pList[i].children[0]) {
+                            tmpArray.push("")
+                            continue
+                        }
+                        tmpArray.push(pList[i].children[0].data)
+                        }
+                        pool.push({
+                            id: id,
+                            created_time: created_time.valueOf(),
+                            doneAt: Date.now(),
+                            body: body,
+                            textFromTagP: tmpArray.join('\n')
+                            //pWithAid: 
+                        })
+                        postCounter.current++
+                        if(postCounter.current === postCounter.total ) finishCrawlingHandler(pool)
+                    }).catch((err) => {
+                        console.log(chalk.greenBright(`Error occured with this URL : ${url}`))
+                        throw err
                     })
-                    postCounter.current++
-                    if(postCounter.current === postCounter.total ) finishCrawlingHandler(pool)
-                }).catch((err) => {
-                    throw err
-                })
             }
     })
 }
