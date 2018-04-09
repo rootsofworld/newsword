@@ -373,8 +373,8 @@
             "name": "中央社新聞粉絲網 CNA News Taiwan",
             "id": "148395741852581",
             "rules": {
-                "article": ".paragraph p",
-                "images": ".picinfo"
+                "article": ".article_box p",
+                "images": ".pic_750 span"
             }
         },
         {
