@@ -392,6 +392,30 @@
                 "article": ".story-body__inner > p",
                 "images": ".media-caption__text"
             }
+        },
+        {
+            "name": "上報國際圈",
+            "id": "1038992542843306",
+            "rules": {
+                "article": ".editor p",
+                "images": "div[style='background:#eee;border:1px solid #ccc;padding:5px 10px;']"
+            }
+        },
+        {
+            "name": "Initium Media 端傳媒",
+            "id": "466505160192708",
+            "rules": {
+                "article": "div[itemprop='articleBody'] > p",
+                "images": "figcaption span"
+            }
+        },
+        {
+            "name": "農傳媒",
+            "id": "1153115098116973",
+            "rules": {
+                "article": "article p:not(._fz05)",
+                "images": "._fz05"
+            }
         }
     ]
 }
