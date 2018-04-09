@@ -1,0 +1,397 @@
+{
+    "targets": [
+        {
+            "name": "風傳媒 Storm Media",
+            "id": "186758878172497",
+            "rules": {
+                "article": "#CMS_wrapper p",
+                "images": ".meta"
+            }
+        },
+        {
+            "name": "風傳媒觀點",
+            "id": "1398223910459300",
+            "rules": {
+                "article": "#CMS_wrapper p",
+                "images": ".meta"
+            }
+        },
+        {
+            "name": "風傳媒看世界",
+            "id": "1405097859767366",
+            "rules": {
+                "article": "#CMS_wrapper p",
+                "images": ".meta"
+            }
+        },
+        {
+            "name": "The News Lens 關鍵評論網",
+            "id": "481065478629613",
+            "rules": {
+                "article": ".article-content p",
+                "images": ".photo-credit"
+            }
+        },
+        {
+            "name": "新頭穀 Newtalk",
+            "id": "136626779700062",
+            "rules": {
+                "article": "#news_content p",
+                "images": ".mainpic_text"
+            }
+        },
+        {
+            "name": "苦勞網 Cool Loud",
+            "id": "267349723280128",
+            "rules": {
+                "article": ".field-item p",
+                "images": ""
+            }
+        },
+        {
+            "name": "上下游 News&Market",
+            "id": "164564180266981",
+            "rules": {
+                "article": ".entry-content p",
+                "images": "figcaption"
+            }
+        },
+        {
+            "name": "上報 Up Media",
+            "id": "286603368359862",
+            "rules": {
+                "article": ".editor p",
+                "images": ".img p"
+            }
+        },
+        {
+            "name": "上報生活圈",
+            "id": "1823361711283355",
+            "rules": {
+                "article": ".editor p",
+                "images": ".img p"
+            }
+        },
+        {
+            "name": "Kairos 風向新聞",
+            "id": "342411392617614",
+            "rules": {
+                "article": ".entry-content > p",
+                "images": "figcaption"
+            }
+        },
+        {
+            "name": "BuzzOrange 報橘",
+            "id": "866920619990655",
+            "rules": {
+                "article": ".entry-content p",
+                "images": ""
+            }
+        },
+        {
+            "name": "科技報橘",
+            "id": "151776788178402",
+            "rules": {
+                "article": ".entry-content p",
+                "images": ""
+            }
+        },
+        {
+            "name": "NOWnews 今日新聞",
+            "id": "102884532662",
+            "rules": {
+                "article": "article p[class!=imgdesc]",
+                "images": ".imgdesc"
+            }
+        },
+        {
+            "name": "公民行動影音紀錄資料庫",
+            "id": "79765636879",
+            "rules": {
+                "article": ".entry-content p",
+                "images": ""
+            }
+        },
+        {
+            "name": "信傳媒",
+            "id": "477998595722697",
+            "rules": {
+                "article": ".article_content > p",
+                "images": ".article_remark"
+            }
+        },
+        {
+            "name": "數位時代",
+            "id": "158495994283",
+            "rules": {
+                "article": ".main_content > p",
+                "images": "figsource"
+            }
+        },
+        {
+            "name": "三立新聞",
+            "id": "110699089014688",
+            "rules": {
+                "article": "#Content1 > p",
+                "images": ""
+            }
+        },
+        {
+            "name": "PO 新聞",
+            "id": "560942983917452",
+            "rules": {
+                "article": ".newsContent > p",
+                "images": ""
+            }
+        },
+        {
+            "name": "TVBS 新聞 ",
+            "id": "220050085932",
+            "rules": {
+                "article": ".h7",
+                "images": ""
+            }
+        },
+        {
+            "name": "東森新聞",
+            "id": "124616330906800",
+            "rules": {
+                "article": "#contentBody",
+                "images": ""
+            }
+        },
+        {
+            "name": "東森財經",
+            "id": "127254684043276",
+            "rules": {
+                "article": "#fncNewsEditorContainer > p",
+                "images": ""
+            }
+        },
+        {
+            "name": "東森國際新聞 ",
+            "id": "313313592355023",
+            "rules": {
+                "article": "",
+                "images": ""
+            }
+        },
+        {
+            "name": "ETtoday新聞雲",
+            "id": "242305665805605",
+            "rules": {
+                "article": ".story > p",
+                "images": ""
+            }
+        },
+        {
+            "name": "雲論",
+            "id": "100496466970462",
+            "rules": {
+                "article": ".story > p",
+                "images": ""
+            }
+        },
+        {
+            "name": "年代新聞 Era News",
+            "id": "259747120795352",
+            "rules": {
+                "article": "",
+                "images": ""
+            }
+        },
+        {
+            "name": "民視新聞 FTV News",
+            "id": "235679595900",
+            "rules": {
+                "article": "article > p",
+                "images": ""
+            }
+        },
+        {
+            "name": "大愛全球新聞 Daai World News",
+            "id": "178928858941326",
+            "rules": {
+                "article": ".main-content > p",
+                "images": ""
+            }
+        },
+        {
+            "name": "寰宇新聞 Global News",
+            "id": "1622109778003035",
+            "rules": {
+                "article": "",
+                "images": ""
+            }
+        },
+        {
+            "name": "PNN 公視新聞網",
+            "id": "335636328832",
+            "rules": {
+                "article": ".article-content",
+                "images": "",
+                "branch": ["pnn.pts.org.tw",".entry"]
+            }
+        },
+        {
+            "name": "中天新聞52家族",
+            "id": "223683434464256",
+            "rules": {
+                "article": ".post-content > p",
+                "images": ""
+            }
+        },
+        {
+            "name": "快點TV",
+            "id": "283285647874",
+            "rules": {
+                "article": ".post-content > p",
+                "images": ""
+            }
+        },
+        {
+            "name": "人間福報 The Merit Times",
+            "id": "142350605777908",
+            "rules": {
+                "article": ".td-post-content > p",
+                "images": "figcaption"
+            }
+        },
+        {
+            "name": "聯合報 UDN",
+            "id": "219315794887869",
+            "rules": {
+                "article": "#story_body_content",
+                "images": "figcaption"
+            }
+        },
+        {
+            "name": "鳴人堂",
+            "id": "796994720374176",
+            "rules": {
+                "article": "main > p",
+                "images": "figcaption"
+            }
+        },
+        {
+            "name": "聯合新聞網 udn.com",
+            "id": "241284961029",
+            "rules": {
+                "article": "#story_body_content",
+                "images": "figcaption"
+            }
+        },
+        {
+            "name": "蘋果日報 台灣",
+            "id": "232633627068",
+            "rules": {
+                "article": ".ndArticle_margin > p",
+                "images": "figcaption"
+            }
+        },
+        {
+            "name": "蘋果日報即時新聞 Apple Real Time News",
+            "id": "352962731493606",
+            "rules": {
+                "article": ".ndArticle_margin > p",
+                "images": "figcaption"
+            }
+        },
+        {
+            "name": "壹周刊 Net Megazine",
+            "id": "125693144152226",
+            "rules": {
+                "article": ".article-content > p",
+                "images": ""
+            }
+        },
+        {
+            "name": "China Times 中時電子報",
+            "id": "188311137478",
+            "rules": {
+                "article": ".arttext > p",
+                "images": ".pictext > p"
+            }
+        },
+        {
+            "name": "自由時報 LTN",
+            "id": "394896373929368",
+            "rules": {
+                "article": ".text > p",
+                "images": ".pic750 > p"
+            }
+        },
+        {
+            "name": "自由時報評論網",
+            "id": "849224898467467",
+            "rules": {
+                "article": ".cont > p",
+                "images": ""
+            }
+        },
+        {
+            "name": "民報 Taiwan People News",
+            "id": "537582866282260",
+            "rules": {
+                "article": "#newscontent > p",
+                "images": "#newsphoto_title"
+            }
+        },
+        {
+            "name": "鏡週刊",
+            "id": "1855418728011324",
+            "rules": {
+                "article": ".content > div",
+                "images": ".img-caption"
+            }
+        },
+        {
+            "name": "台灣醒報",
+            "id": "419867271697177",
+            "rules": {
+                "article": ".markdown-body > p",
+                "images": ".description"
+            }
+        },
+        {
+            "name": "台灣醒報國際現場",
+            "id": "171277936959",
+            "rules": {
+                "article": ".markdown-body > p",
+                "images": ".description"
+            }
+        },
+        {
+            "name": "大紀元時報 - 台灣(The Epoch Times - Taiwan)",
+            "id": "104399084666",
+            "rules": {
+                "article": "#article_wrap > p",
+                "images": ".red16 > p"
+            }
+        },
+        {
+            "name": "中央社新聞粉絲網 CNA News Taiwan",
+            "id": "148395741852581",
+            "rules": {
+                "article": ".paragraph p",
+                "images": ".picinfo"
+            }
+        },
+        {
+            "name": "中央社財經粉絲團",
+            "id": "543951855656656",
+            "rules": {
+                "article": ".box_2 p",
+                "images": ".box_1"
+            }
+        },
+        {
+            "name": "BBC 中文網",
+            "id": "592266607456680",
+            "rules": {
+                "article": ".story-body__inner > p",
+                "images": ".media-caption__text"
+            }
+        }
+    ]
+}
