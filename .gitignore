@@ -2,7 +2,9 @@
 misc/
 result.json
 app_config.json
-data/
+data/*
+!data/news-423-427
+!data/dumbdb
 .DS_Store
 
 pagedata/
