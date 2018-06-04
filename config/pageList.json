@@ -1,7 +1,7 @@
 {
     "targets": [
         {
-            "name": "風傳媒 Storm Media",
+            "name": "風傳媒",
             "id": "186758878172497",
             "rules": {
                 "article": "#CMS_wrapper p",
@@ -33,7 +33,7 @@
             }
         },
         {
-            "name": "新頭穀 Newtalk",
+            "name": "新頭殼newtalk",
             "id": "136626779700062",
             "rules": {
                 "article": "#news_content p",
@@ -41,7 +41,7 @@
             }
         },
         {
-            "name": "苦勞網 Cool Loud",
+            "name": "苦勞網",
             "id": "267349723280128",
             "rules": {
                 "article": ".field-item p",
@@ -57,7 +57,7 @@
             }
         },
         {
-            "name": "上報 Up Media",
+            "name": "上報",
             "id": "286603368359862",
             "rules": {
                 "article": ".editor p",
@@ -89,7 +89,7 @@
             }
         },
         {
-            "name": "科技報橘",
+            "name": "TechOrange 科技報橘",
             "id": "151776788178402",
             "rules": {
                 "article": ".entry-content p",
@@ -145,7 +145,7 @@
             }
         },
         {
-            "name": "TVBS 新聞 ",
+            "name": "TVBS 新聞",
             "id": "220050085932",
             "rules": {
                 "article": ".h7",
@@ -169,7 +169,7 @@
             }
         },
         {
-            "name": "東森國際新聞 ",
+            "name": "東森國際新聞",
             "id": "313313592355023",
             "rules": {
                 "article": "",
@@ -193,7 +193,7 @@
             }
         },
         {
-            "name": "年代新聞 Era News",
+            "name": "年代新聞",
             "id": "259747120795352",
             "rules": {
                 "article": "",
@@ -201,7 +201,7 @@
             }
         },
         {
-            "name": "民視新聞 FTV News",
+            "name": "民視新聞",
             "id": "235679595900",
             "rules": {
                 "article": "article > p",
@@ -209,7 +209,7 @@
             }
         },
         {
-            "name": "大愛全球新聞 Daai World News",
+            "name": "大愛全球新聞",
             "id": "178928858941326",
             "rules": {
                 "article": ".main-content > p",
@@ -217,7 +217,7 @@
             }
         },
         {
-            "name": "寰宇新聞 Global News",
+            "name": "寰宇新聞",
             "id": "1622109778003035",
             "rules": {
                 "article": "",
@@ -230,7 +230,10 @@
             "rules": {
                 "article": ".article-content",
                 "images": "",
-                "branch": ["pnn.pts.org.tw",".entry"]
+                "branch": [
+                    "pnn.pts.org.tw",
+                    ".entry"
+                ]
             }
         },
         {
@@ -250,7 +253,7 @@
             }
         },
         {
-            "name": "人間福報 The Merit Times",
+            "name": "人間福報",
             "id": "142350605777908",
             "rules": {
                 "article": ".td-post-content > p",
@@ -258,7 +261,7 @@
             }
         },
         {
-            "name": "聯合報 UDN",
+            "name": "聯合報",
             "id": "219315794887869",
             "rules": {
                 "article": "#story_body_content",
@@ -274,7 +277,7 @@
             }
         },
         {
-            "name": "聯合新聞網 udn.com",
+            "name": "udn.com 聯合新聞網",
             "id": "241284961029",
             "rules": {
                 "article": "#story_body_content",
@@ -290,7 +293,7 @@
             }
         },
         {
-            "name": "蘋果日報即時新聞 Apple Real Time News",
+            "name": "蘋果日報即時新聞",
             "id": "352962731493606",
             "rules": {
                 "article": ".ndArticle_margin > p",
@@ -298,7 +301,7 @@
             }
         },
         {
-            "name": "壹周刊 Net Megazine",
+            "name": "壹週刊",
             "id": "125693144152226",
             "rules": {
                 "article": ".article-content > p",
@@ -306,7 +309,7 @@
             }
         },
         {
-            "name": "China Times 中時電子報",
+            "name": "中時電子報",
             "id": "188311137478",
             "rules": {
                 "article": ".arttext > p",
@@ -314,7 +317,7 @@
             }
         },
         {
-            "name": "自由時報 LTN",
+            "name": "自由時報",
             "id": "394896373929368",
             "rules": {
                 "article": ".text > p",
@@ -330,7 +333,7 @@
             }
         },
         {
-            "name": "民報 Taiwan People News",
+            "name": "民報",
             "id": "537582866282260",
             "rules": {
                 "article": "#newscontent > p",
@@ -370,7 +373,7 @@
             }
         },
         {
-            "name": "中央社新聞粉絲網 CNA News Taiwan",
+            "name": "中央社新聞粉絲團",
             "id": "148395741852581",
             "rules": {
                 "article": ".article_box p",
@@ -386,7 +389,7 @@
             }
         },
         {
-            "name": "BBC 中文網",
+            "name": "BBC 中文網（繁體）",
             "id": "592266607456680",
             "rules": {
                 "article": ".story-body__inner > p",
@@ -415,6 +418,14 @@
             "rules": {
                 "article": "article p:not(._fz05)",
                 "images": "._fz05"
+            }
+        },
+        {
+            "name":"壹電視 Next TV",
+            "id": "139537219397249",
+            "rules": {
+                "article": "div.content p",
+                "images": ""
             }
         }
     ]
