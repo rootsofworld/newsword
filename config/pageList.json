@@ -204,7 +204,7 @@
             "name": "民視新聞",
             "id": "235679595900",
             "rules": {
-                "article": "article > p",
+                "article": "#newscontent p",
                 "images": ""
             }
         },

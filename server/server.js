@@ -6,26 +6,9 @@ const bodyParser = require('body-parser');
 const csv = require('csvtojson');
 const fileUpload = require('express-fileupload')
 //const upload = require('multer')({dest:"./uploads/"}); 
-const {matchTopic, matchAllFile} = require('../lib/matchTopic.js');
+//const {matchTopic, matchAllFile} = require('../lib/matchTopic.js');
 const db = mongoose.connect("mongodb://sf:105753037@140.119.164.168:27017/admin")
 
-////////// utils //////////
-
-function hashCode(str) {
-    var hash = 0, i, chr;
-    if (this.length === 0) return hash;
-    for (i = 0; i < this.length; i++) {
-      chr   = this.charCodeAt(i);
-      hash  = ((hash << 5) - hash) + chr;
-      hash |= 0; // Convert to 32bit integer
-    }
-    return hash;
-  };
-
-
-
-
-///////////////////////////
 
 const app = express()
 app.set('views', './template')

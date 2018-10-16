@@ -6,8 +6,16 @@
 目前執行流程：
     CT directory -> pageFilter.js -> newsCrawler.js -> matchTopic.js -> csv / json
 
-圖說文字中，顯示為圖片非直接相關之圖片的用語，包括：
+**不完整**
+    圖說文字中，顯示為圖片非直接相關之圖片的用語，包括：
 	示意圖、示意、非當事、模擬、與本文無關、設計畫面
+**
+
+TODO:
+postvsnews
+    2 column, one for post, one for news
+    header: searchBar {postid, date, keywords?}
+
 
 報導內文中，顯示消息來源為不具名的用語，包括：
 	據表示、據指出、高層、可靠消息來源、據透漏、權威人士、知情人士、當局、鄉民表示
