@@ -6,6 +6,9 @@ data/*
 !data/news-423-427
 !data/dumbdb
 .DS_Store
+lib/*.csv
+lib/*.json
+lib/*.xlsx
 
 pagedata/
 views/
