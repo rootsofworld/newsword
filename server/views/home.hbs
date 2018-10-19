@@ -4,62 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>FB Post to News</title>
+    <title>Document</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <style>
-        body{
-            padding-top: 50px;
+        .link {
+            margin: 50px 50px;
         }
-
-        .container {
-            width: 95%;
-        }
-
-        #uploader {
-            display: flex;
-            flex-flow: column;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .upload-state {
-            display: inline-block;
-            width: 150px;
-            text-align: center;
-        }
-
-        .flex {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .message {
-            color: #26a69a;
-        }
-
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="row">
-            <div class="col s12 m12 l12" id="uploader">
-                <input type="file" name="file-input" id="file-input" style="display:none" multiple>
-                <button id="file-upload" class="waves-effect waves-light btn"><i class="material-icons left">backup</i>upload</button>
-                <div class="upload-state"></div>
+        <div>
+            <div class="link">
+                <a href="/upload">Upload</a>
             </div>
-        </div>
-        <div class="row flex">
-            <div id="readme">
-                <p>
-                    此頁面用於上傳CrowdTangle抓下來的csv檔
-                    可一次上傳多個檔案
-                </p>
+            <div class="link">
+                <a href="/dashboard">Dashboard</a> 
             </div>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script src="js/upload.js"></script>
 </body>
 </html>

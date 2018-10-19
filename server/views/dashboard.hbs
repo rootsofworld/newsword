@@ -4,83 +4,160 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <title>FB-post&News Dashboard</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!--
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    -->
     <style>
-        textarea {
-            resize: none;
+        .container {
+            margin: 0 auto;
+        }
+        .sidenav li {
+            margin: 5px 10px;
+            line-height: 28px;
         }
 
-        .form-container{
+        .sidenav input {
+            height: 28px;
+        }
+
+        #keyword-input {
+            border: 1px solid #9e9e9e;
+            height: 32px;
+        }
+
+        #keyword-input:focus {
+            border: none;
+        }
+        .clear {
+            position: relative
+            right: 0px;
+            bottom: 0px;
+        }
+
+        .keyword {
+            float: left;
+            margin: 0px 3px 5px;
+            border: 1px solid #9e9e9e;
+            padding: 0px 2px;
+
+        }
+        .clear:hover {
+            color: #9e9e9e;
+        }
+
+        .align-center {
+            text-align: center;
+        }
+
+        .align-center::before {
+            content: '';
+            display: block;
+            clear: both;
+        }
+
+        #send:active {
+            transform: translateY(2px)
+        }
+
+        .menu{
+            height: auto;
             display: flex;
+            flex: column;
+            align-items: center;
+            justify-content: space-around;
+        }
+        
+        .wrapper {
+            margin: 50px auto;
         }
 
-        label{
-            display: inline;
-        }
-        .vis {
-            border: 1px solid black;
-        }
-
-        .header{
-            color: white;
-            height: 20px;
-            background-color: aqua;
-            margin-bottom: 15px;
+        #chart {
+            width: 90%;
+            height: 300px;
+            border: 1px solid #9e9e9e;
         }
 
+        #table {
+            width: 90%;
+            height: 300px;
+            border: 1px solid #9e9e9e;
+        }
 
+        #uploader {
+            display: flex;
+            flex-flow: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .upload-state {
+            display: inline-block;
+            width: 150px;
+            text-align: center;
+        }
+
+        .message {
+            color: #26a69a;
+        }
+
+        #mode {
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <div class="header"></div>
     <div class="container">
-        <div class="row justify-content-around">
-            <div class="form-container col-3">
-                <form>
-                    <div class="topic_input">
-                        <label for="topic">Topic</label>
-                        <textarea name="topic" id="topic" cols="30" rows="6" required>{{topic}}</textarea>
-                    </div>
-                    <div class="keywords_input">
-                        <label for="keywords">Keywords</label>
-                        <textarea name="keywords" id="keywords" cols="30" rows="10" required>{{keywords}}</textarea>
-                    </div>
-                    <button id='submit' type="submit">Submit</button>
-                </form>
-            </div>
-            <div class="vis col-8">
-
+        <div class="row">
+            <div class="menu col s12 m2 l2">
+                <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="medium material-icons">menu</i></a>
             </div>
         </div>
     </div>
+    <div id="chart" class="wrapper"></div>
+    <div id="table" class="wrapper"></div>
+    <ul id="slide-out" class="sidenav">
+        <li><span class="subheader">Upload</span></li>
+        <li>
+            <div id="uploader">
+                <input type="file" name="file-input" id="file-input" style="display:none" multiple>
+                <button id="file-upload" class="waves-effect waves-light btn"><i class="material-icons left">backup</i>upload</button>
+                <div class="upload-state"></div>
+            </div>
+        </div>
+        </li>
+        <li><div class="divider"></div></li>
+        <li><span class="subheader">Mode</span></li>
+        <li>
+            <div id="mode" class="switch">
+                <label>
+                origin
+                <input type="checkbox">
+                <span class="lever"></span>
+                crawled
+                </label>
+            </div>
+        </li>
+        <li><span class="subheader">Date</span></li>
+        <li><label for="date-from">From:</label></li>
+        <li><form><input type="date" name="from" id="date-from" required></form></li>
+        <li><label for="date-to">To:</label></li>
+        <li><input type="date" name="to" id="date-to" required></li>
+        <li><span class="subheader">Keywords</span></li>
+        <li>
+            <form id="keywords-form">
+                <input type="text" id="keyword-input">
+            </form>
+        </li>
+        <li><div id="keywords"></div></li>
+        <li class="align-center"><button id="send" class="btn">GO</button></li>
+    </ul>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="https://d3js.org/d3.v5.min.js"></script>
-    <script>
-        var submit = document.querySelector('#submit');
-        var topic_input = document.querySelector('#topic');
-        var keywords_input = document.querySelector('#keywords')
-        
-        submit.addEventListener('click', function(e){
-            e.preventDefault();
-            $.ajax({
-                url:'/data',
-                method: 'post',
-                data:{
-                    topic:topic_input.value,
-                    keywords: keywords_input.value
-                },
-                success: function(res){
-                    var data = res.data;
-                    console.log(data)
-                    vis(data)
-                }
-            })
-        })
-
-        function vis(data){
-            
-        }
-    </script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/upload.js"></script>
 </body>
 </html>
