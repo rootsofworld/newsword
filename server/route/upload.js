@@ -2,20 +2,22 @@ const express = require('express');
 const fileUpload = require('express-fileupload');
 const Post = require('../model/post.js');
 const csv = require('csvtojson');
+const fs = require('fs');
 
 
 let router = express.Router()
 
-router.route('/')
-        .post(fileUpload(), function(req, res){
+router.post('/', fileUpload(), function(req, res){
             if(!req.files){
                 return res.status(400).send('Upload Failed')
             }
             
             let file = req.files.file.data.toString()
+            let id_list = []
             csv()
                 .fromString(file)
                 .then( (rows) => {
+                    var count = rows.length
                     rows.map(row => {
                         return {
                             name: row["Name"],
@@ -52,7 +54,11 @@ router.route('/')
                             if(!post.length) {
                                 Post.create(row, function(err, post){
                                     if(err) return handleError(err)
+                                    console.log(post._id)
+                                    id_list.push(post._id)
                                     console.log(post.name + "-" + post.created + " saved in Posts")
+                                    count--
+                                    if(count === 0) finish()
                                 })
                             }else{
                                 console.log(row.name + "-" + row.created + " is Already Exist")
@@ -60,7 +66,14 @@ router.route('/')
                         })
                     })
                 })
-            
+
+            function finish(){
+                fs.writeFile(`waitingList/${Date.now()}.txt`, id_list.join('/n'), 'utf8', function(err, data){
+                    if(err) console.log(err)
+                    //console.log(id_list)
+                    console.log(`Rows Count: ${id_list.length}`)
+                })
+            }
             
             //console.log(req.files.file.data.toString())
             res.send(req.files.file.name + " uploaded confirm")

@@ -9,6 +9,7 @@ data/*
 lib/*.csv
 lib/*.json
 lib/*.xlsx
+server/waitingList
 
 pagedata/
 
