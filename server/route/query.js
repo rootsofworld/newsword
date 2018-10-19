@@ -12,7 +12,7 @@ router.post('/', multer.none(), function(req, res){
     let {from, to, keywords} = req.body
     
     if(keywords){
-        console.log(keywords.split(',').join('|'))
+        //console.log(keywords.split(',').join('|'))
         let wordFilter = new RegExp(keywords.split(',').join('|'), 'g')
         Post.find({
             message: wordFilter,
@@ -33,7 +33,7 @@ router.post('/', multer.none(), function(req, res){
     
     function callback(err, data){
         if(err) throw err;
-        console.log(data)
+        //console.log(data)
         res.send(data)
     }
 

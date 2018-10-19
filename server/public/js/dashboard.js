@@ -145,9 +145,15 @@
       
         // lookup the container we want the Grid to use
         var eGridDiv = document.querySelector('#data-table');
+        //console.log(eGridDiv.children)
+        //if already has table display, then remove it
+        if(eGridDiv.children.length > 1){
+            eGridDiv.removeChild(eGridDiv.lastChild)
+        }
+
         var dataCount = document.querySelector('#data-count span')
         var placeholder = document.querySelector('.placeholder')
-        placeholder.style.display = none;
+        placeholder.style.display = 'none';
 
         dataCount.textContent = data.length
         // create the grid passing in the div to use together with the columns & data we want to use
