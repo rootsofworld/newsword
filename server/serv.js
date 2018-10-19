@@ -6,7 +6,6 @@ const bodyParser = require('body-parser');
 const db = mongoose.connect("mongodb://sf:105753037@140.119.164.168:27017/admin")
 //Router
 const uploader = require('./route/upload.js');
-const dashboard = require('./route/dashboard.js')
 const query = require('./route/query.js')
 
 const app = express()
@@ -16,12 +15,12 @@ app.use(express.static(__dirname + '/public'))
 
 app.use('/upload', uploader)
 
-app.use('/dashboard', dashboard)
-
 app.use('/data', query)
 
 
 app.get('/', function(req, res){
+    var visitorIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    console.log(visitorIP + " has visited!")
     res.render('dashboard')
 })
 
