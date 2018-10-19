@@ -111,6 +111,47 @@
     //Display Data
     function updateTable(data){
         console.log('update the table')
+        var columnDefs = [
+            {headerName: "Name", field: "name"},
+            {headerName: "CrawlState", field: "crawlState"},
+            {headerName: "Created", field: "created"},
+            {headerName: "Type", field: "type"},
+            {headerName: "LinkText", field: "linkText"},
+            {headerName: "Message", field: "message"},
+            {headerName: "Likes", field: "likes"},
+            {headerName: "Comments", field: "comments"},
+            {headerName: "Shares", field: "shares"},
+            {headerName: "Love", field: "love"},
+            {headerName: "Wow", field: "wow"},
+            {headerName: "Haha", field: "haha"},
+            {headerName: "Sad", field: "sad"},
+            {headerName: "Angry", field: "angry"},
+            {headerName: "Thankful", field: "thankful"},
+            {headerName: "PostViews", field: "postViews"},
+            {headerName: "TotalViews", field: "totalViews"},
+            {headerName: "SizeAtPosting", field: "sizeAtPosting"},
+            {headerName: "VideoShareStatus", field: "videoShareStatus"},
+            {headerName: "Url", field: "url"},
+            {headerName: "Link", field: "link"},
+            {headerName: "Score", field: "score"}
+          ];
+      
+          // let the grid know which columns and what data to use
+          var gridOptions = {
+            columnDefs: columnDefs,
+            enableSorting: true,
+            enableFilter: true
+          };
+      
+        // lookup the container we want the Grid to use
+        var eGridDiv = document.querySelector('#data-table');
+        var dataCount = document.querySelector('#data-count span')
+
+        dataCount.textContent = data.length
+        // create the grid passing in the div to use together with the columns & data we want to use
+        new agGrid.Grid(eGridDiv, gridOptions);
+        
+        gridOptions.api.setRowData(data);
     }
 
 

@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>FB-post&News Dashboard</title>
+    <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
+    <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <!--
@@ -80,9 +83,10 @@
             border: 1px solid #9e9e9e;
         }
 
-        #table {
+        #data-table {
+            margin: 50px 50px;
             width: 90%;
-            height: 300px;
+            height: 800px;
             border: 1px solid #9e9e9e;
         }
 
@@ -97,6 +101,12 @@
             display: inline-block;
             width: 150px;
             text-align: center;
+        }
+
+        #data-count{
+            text-align: center;
+            font-size: 32px;
+            color: #26a69a;
         }
 
         .message {
@@ -116,8 +126,10 @@
             </div>
         </div>
     </div>
-    <div id="chart" class="wrapper"></div>
-    <div id="table" class="wrapper"></div>
+    <div id="data-count">
+        <p>Matched Data: <span></span></p>
+    </div>
+    <div id="data-table" class="ag-theme-balham"></div>
     <ul id="slide-out" class="sidenav">
         <li><span class="subheader">Upload</span></li>
         <li>
