@@ -98,6 +98,7 @@
         */
     }
 
+    //Progress bar Constructor
     class ProgressBar {
         constructor(wrapper){
             this.progress = 0;

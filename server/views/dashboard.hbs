@@ -144,6 +144,10 @@
         .main {
             padding: 0px 50px;
         }
+
+        .download {
+            float: right;
+        }
     </style>
 </head>
 <body>
@@ -155,7 +159,11 @@
     </div>
     <div class="main">
         <div id="data-count">
-            <p>Matched Data: <span></span></p>
+            <p>Matched Data: <span></span>
+                <span class="download">
+                    <button id="download" class="waves-effect waves-light btn"><i class="material-icons left">file_download</i>Download CSV</button>
+                </span>
+            </p>
         </div>
         <div id="data-table" class="ag-theme-balham">
             <div class="placeholder">
