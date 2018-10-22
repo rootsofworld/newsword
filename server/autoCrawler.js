@@ -230,6 +230,7 @@ async function crawl(post){
         totalViewsForAllCrossposts: post.totalViewsForAllCrossposts,
         url: post.url,
         message: post.message,
+        article: post.article,
         link: post.link,
         finalLink: post.finalLink,
         linkText: post.linkText,
