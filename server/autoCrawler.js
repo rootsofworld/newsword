@@ -19,7 +19,6 @@ const wordIntersectRatio = require('./util/wordIntersectRatio.js')
 const NewsParser = require('./util/newsparser.js')
 const stopwords = fs.readFileSync('./config/stopwords.txt','utf8')
 /////////////////////////////////////////////////////////////////
-//const batchTask = require('./batchTask.js');
 const target = require('./config/pageList.json')
 const db = mongoose.connect("mongodb://sf:105753037@140.119.164.168:27017/admin")
 const CrawledPost = require('./model/crawledPost.js')
@@ -32,7 +31,7 @@ var pageMap = new Map()
 target.targets.forEach(page => {
     pageMap.set(page.name, page)
 })
-//console.log(pageMap.entries())
+
 
 var user_agent = ["Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36",  
 "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36",  
@@ -72,7 +71,7 @@ class Crawler {
         }
     }
 
-    //Only call when not
+    //Only call when not crawling
     async crawlFromList(){
         this.crawling = true
 
@@ -153,13 +152,6 @@ const {readFile, writeFile, readDir, mkDir} = ((funcs) => {
 const wp = new wordProcesser()
 
 
-//readAndCrawl('./waiting/1539951553845.txt')
-
-
-
-
-
-
 async function crawl(post){
     
     if(!pageMap.has(post.name)){
@@ -183,7 +175,7 @@ async function crawl(post){
     }
     /////////////
     
-        //await sleep(500)
+    //await sleep(500)
     
     var response = await axios(url, options)
     
@@ -199,17 +191,14 @@ async function crawl(post){
     if(!post.article){
         return false
     }
-    //if(post.article === "") console.log('Oops')
-    //console.log(post['Link Text'])
+    
     var postKeywords = post.postKeywords = wp.stopwordFilter(wp.extract(wp.punctuactionFilter(post.message), 1000).map( obj => obj.word), stopwords);
     var articleKeywords = post.articleKeywords = wp.stopwordFilter(wp.extract(wp.punctuactionFilter(post.article), 1000).map( obj => obj.word), stopwords);
     var similarity = wordIntersectRatio( postKeywords, articleKeywords );
     post.intersection = similarity.intersectedWords
     post.ratio = similarity.ratio
     
-    //console.log(post)
-    //console.log(`\n${post.name} is Done`)
- 
+    
     return {
         name: post.name,
         sizeAtPosting: post.sizeAtPosting,
@@ -262,6 +251,9 @@ function findAndCrawl(id, errorList){
                 //write in failed list and write in failed dir later
                 console.error(chalk.red('\n' + crawledData))
                 errorList.push(id)
+                Post.update({ _id: id }, { $set: {crawlState : "Failed"} }, (err) => {
+                    if(err) return handleError(err)
+                })
                 resolve(crawledData)
             }
         })
@@ -269,7 +261,5 @@ function findAndCrawl(id, errorList){
 }
 
 function handleError(err){
-    console.log(err.name)
+    console.log(chalk.red(err.name))
 }
-
-//crawl(process.argv[2])
