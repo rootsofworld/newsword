@@ -54,7 +54,7 @@ router.post('/', fileUpload(), function(req, res){
                             if(!post.length) {
                                 Post.create(row, function(err, post){
                                     if(err) return handleError(err)
-                                    console.log(post._id)
+                                    console.log("_ID: " + post._id)
                                     id_list.push(post._id)
                                     console.log(post.name + "-" + post.created + " saved in Posts")
                                     count--

@@ -7,7 +7,7 @@ let router = express.Router()
 
 router.use(bodyParser.urlencoded({extended: true}))
 
-router.post('/', multer.none(), function(req, res){
+router.post('/origin', multer.none(), function(req, res){
     
     let {from, to, keywords} = req.body
     
@@ -36,6 +36,10 @@ router.post('/', multer.none(), function(req, res){
         //console.log(data)
         res.send(data)
     }
+
+})
+
+router.post('/crawled', multer.none(), function(req, res){
 
 })
 

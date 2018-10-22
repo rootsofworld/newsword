@@ -42,6 +42,14 @@
     ////////////////////////////////////////
     
     //Request Data
+    let modeSwitch = document.getElementById('mode-switch');
+    let modeMap =  (value) => value ? 'crawled' : 'origin';
+    let mode = 'origin'
+    modeSwitch.addEventListener('change', function(e){
+        mode = modeMap(e.target.checked)
+        console.log("Mode: " + mode)
+    })
+
     let fd = new FormData();
     let dataChecker = {
         keywords: "empty",
@@ -60,7 +68,7 @@
         for(el of fd.entries()) console.log(el)
         
         $.ajax({
-            url:'/data',
+            url: (mode === 'origin') ? '/data/origin' : '/data/crawled',
             method: 'POST',
             data: fd,
             processData: false,
