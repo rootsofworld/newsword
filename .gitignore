@@ -2,14 +2,12 @@
 misc/
 result.json
 app_config.json
-data/*
-!data/news-423-427
-!data/dumbdb
+data/
 .DS_Store
-lib/*.csv
-lib/*.json
-lib/*.xlsx
-server/waitingList
+lib/*
+server/failed/*
+server/waiting/*
+
 
 pagedata/
 
