@@ -30,7 +30,7 @@ const crawledPost = new Schema({
     score: Number,
     article: String,
     articleKeywords: {type: Array, default: []},
-    messageKeywords: {type: Array, default: []},
+    postKeywords: {type: Array, default: []},
     intersection: {type: Array, default: []},
     ratio: Number
 })

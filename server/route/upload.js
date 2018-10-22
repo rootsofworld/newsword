@@ -68,7 +68,7 @@ router.post('/', fileUpload(), function(req, res){
                 })
 
             function finish(){
-                fs.writeFile(`waitingList/${Date.now()}.txt`, id_list.join('/n'), 'utf8', function(err, data){
+                fs.writeFile(`waiting/${Date.now()}.txt`, id_list.join('/n'), 'utf8', function(err, data){
                     if(err) console.log(err)
                     //console.log(id_list)
                     console.log(`Rows Count: ${id_list.length}`)

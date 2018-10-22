@@ -28,7 +28,7 @@ const post = new Schema({
     finalLink: String,
     linkText: String,
     score: Number,
-    crawlState: String
+    crawlState: String //Waiting | Success | Failed
 })
 
 

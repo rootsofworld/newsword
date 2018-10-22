@@ -4,7 +4,7 @@
     $('.sidenav').sidenav();
     
     /////////////// /For Grid table ///////////////
-    const columnDefs = [
+    const originDef = [
         {headerName: "Name", field: "name"},
         {headerName: "CrawlState", field: "crawlState"},
         {headerName: "Created", field: "created"},
@@ -23,20 +23,40 @@
         {headerName: "PostViews", field: "postViews"},
         {headerName: "TotalViews", field: "totalViews"},
         {headerName: "SizeAtPosting", field: "sizeAtPosting"},
-        {headerName: "VideoShareStatus", field: "videoShareStatus"},
+        {headerName: "Url", field: "url"},
+        {headerName: "Link", field: "link"},
+        {headerName: "Score", field: "score"}
+    ];
+
+    const crawledDef = [
+        {headerName: "Name", field: "name"},
+        {headerName: "CrawlState", field: "crawlState"},
+        {headerName: "Created", field: "created"},
+        {headerName: "Type", field: "type"},
+        {headerName: "LinkText", field: "linkText"},
+        {headerName: "Message", field: "message"},
+        {headerName: "Likes", field: "likes"},
+        {headerName: "Comments", field: "comments"},
+        {headerName: "Shares", field: "shares"},
+        {headerName: "Love", field: "love"},
+        {headerName: "Wow", field: "wow"},
+        {headerName: "Haha", field: "haha"},
+        {headerName: "Sad", field: "sad"},
+        {headerName: "Angry", field: "angry"},
+        {headerName: "Thankful", field: "thankful"},
+        {headerName: "PostKeywords", field: "postKeywords"},
+        {headerName: "ArticleKeywords", field: "articleKeywords"},
+        {headerName: "Intersection", field: "intersection"},
+        {headerName: "Ratio", field: "ratio"},
+        {headerName: "PostViews", field: "postViews"},
+        {headerName: "TotalViews", field: "totalViews"},
+        {headerName: "SizeAtPosting", field: "sizeAtPosting"},
         {headerName: "Url", field: "url"},
         {headerName: "Link", field: "link"},
         {headerName: "Score", field: "score"}
     ];
     
-    let gridOptions = {
-        columnDefs: columnDefs,
-        enableSorting: true,
-        enableFilter: true,
-        enableColResize: true,
-        suppressDragLeaveHidesColumns: true,
-        multiSortKey: 'ctrl'
-    };
+    
 
     
     ////////////////////////////////////////
@@ -77,7 +97,8 @@
             success: function(res){
                 var data = res;
                 //console.log(data)
-                updateTable(data)
+
+                updateTable(data, mode)
                 //////////
                 // TODO: replace "data-count" with select-option & little bar chart
                 //////////
@@ -149,9 +170,20 @@
 
 
     //Display Data
-    function updateTable(data){
+    function updateTable(data, mode){
         console.log('update the table')
       
+
+        var gridOptions = {
+            columnDefs: (mode === 'origin') ? originDef : crawledDef,
+            enableSorting: true,
+            enableFilter: true,
+            enableColResize: true,
+            suppressDragLeaveHidesColumns: true,
+            multiSortKey: 'ctrl'
+        };
+
+
         // lookup the container we want the Grid to use
         var eGridDiv = document.querySelector('#data-table');
         //console.log(eGridDiv.children)

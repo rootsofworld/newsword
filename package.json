@@ -19,6 +19,7 @@
     "axios-https-proxy-fix": "^0.17.1",
     "chalk": "^2.4.1",
     "cheerio": "^1.0.0-rc.2",
+    "chokidar": "^2.0.4",
     "color-convert": "^1.9.1",
     "commander": "^2.15.1",
     "corenlp": "^1.4.3",

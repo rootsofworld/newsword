@@ -1,5 +1,3 @@
-let waitingList
-
 const urlencode = require('urlencode');
 const cheerio = require('cheerio');
 const fs = require('fs');
@@ -11,35 +9,30 @@ const util = require('util')
 const json2csv = require('json2csv')
 const csv = require('csvtojson')
 const path = require('path')
+const chokidar = require('chokidar')
+const mongoose = require('mongoose')
 /////////////////// 網頁解析與文字處理相關 /////////////////////
 const wordProcesser = require('./util/wordprocesser.js')
 const getAnonymous = require('./util/getAnonymous.js')
 const hasDoubtfulImageText = require('./util/hasDoubtfulImageText.js')
 const wordIntersectRatio = require('./util/wordIntersectRatio.js')
 const NewsParser = require('./util/newsparser.js')
-const stopwords = fs.readFileSync('../config/stopwords.txt','utf8')
+const stopwords = fs.readFileSync('./config/stopwords.txt','utf8')
 /////////////////////////////////////////////////////////////////
 //const batchTask = require('./batchTask.js');
-const target = require('../config/pageList.json')
+const target = require('./config/pageList.json')
+const db = mongoose.connect("mongodb://sf:105753037@140.119.164.168:27017/admin")
+const CrawledPost = require('./model/crawledPost.js')
+const Post = require('./model/post.js')
+
+
+
+
 var pageMap = new Map()
 target.targets.forEach(page => {
     pageMap.set(page.name, page)
 })
 //console.log(pageMap.entries())
-
-const input = '../data/3-pack/' + process.argv[2]; //input file name
-
-var fsFuncList = ['readFile', 'writeFile', 'readdir', 'mkdir'];
-const {readFile, writeFile, readDir, mkDir} = ((funcs) => {
-    var funcSet = {}
-    funcs.forEach(func => {
-        funcSet[func] = util.promisify(fs[func])
-    });
-    return funcSet;
-})(fsFuncList);
-
-//console.log(pagelist)
-const wp = new wordProcesser()
 
 var user_agent = ["Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36",  
 "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36",  
@@ -49,7 +42,7 @@ var user_agent = ["Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML
 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.78 Safari/537.36'
 ] 
 
-var option = {
+var options = {
     method: 'get',
     headers: {
         'User-Agent' : user_agent[Number((Math.random() * user_agent.length).toFixed(0))]
@@ -60,54 +53,124 @@ var option = {
     }
 }
 
-console.log(input)
+let watcher = chokidar.watch('./waiting', {
+    persistent: true
+})
 
+class Crawler {
+    constructor(options, targets = []){
+        this.options = options
+        this.waitingList = targets
+        this.crawling = false
+    }
 
-csv().fromFile(input)
-        .then( async list => {
-            var map = new Map()
-            list = list.sort((d1, d2) => {
-                var t1 = new Date(d1["Created"].slice(0, -4))
-                var t2 = new Date(d2["Created"].slice(0, -4))
-                return t2.getMilliseconds() - t1.getMilliseconds()
-            })
-            //console.log(list.slice(0, 9))
-            for(let i = 0; i < list.length; i++){
-                var dataPoint = await crawl(list[i])
-                //console.log(dataPoint)
-                if(dataPoint){
-                    if(!map.has(dataPoint["Name"])){
-                        map.set(dataPoint["Name"], new Array(dataPoint))
-                        console.log(map.get(dataPoint["Name"]))
-                    }else{
-                        console.log("Name: " + dataPoint["Name"])
-                        var arr = map.get(dataPoint["Name"])
-                        arr.push(dataPoint)
-                        map.set(dataPoint["Name"], arr)
-                    }
-                }
-            } 
-            var data = []
-            for(dp of map.values()){
-                data = data.concat(dp)
+    add(path){
+        console.log("Add File in waiting List")
+        this.waitingList.push(path)
+        if(!this.crawling){
+            this.crawlFromList()
+        }
+    }
+
+    //Only call when not
+    async crawlFromList(){
+        this.crawling = true
+
+        let errorList = []
+        let list = this.waitingList.pop()
+        let content = fs.readFileSync(list, 'utf8').split('/n')
+        
+        for(let i = 0; i < content.length; i++){
+
+            let id = content[i]
+            let result = await findAndCrawl(id, errorList)
+
+            if(result){
+
+                CrawledPost.create(result, function(err, data){
+                    if(err) return handleError(err)
+                    console.log(chalk.green("Create Crawledpost"))
+
+                    Post.update({_id: id}, { $set: { crawlState: "Success" } }, (err) => {
+                        if(err) return handleError(err)
+                    })
+
+                    console.log("_id: " + id + " has crawled and save in DB")
+                })
+                
+            }else{
+                console.log(chalk.red("NonLink type"))
             }
-            var dataString = JSON.stringify(data)
-            fs.writeFile(process.argv[2].split('.')[0] + "-out.json", dataString, 'utf8', (err) => {
-                if(err) throw err;
-                console.log("Data Size: " + data.length)
-            })
-        })
+            
+        }
+
+        if(errorList.length !== 0){
+            console.log("ERROR Count: " + errorList.length)
+            fs.writeFileSync(`./failed/${Date.now()}.txt`, errorList.join('/n'))
+        }
+        
+        fs.unlinkSync(list)
+
+        if(this.waitingList.length > 0){
+            console.log('Find another file. Keep Crawling...')
+            this.crawlFromList()
+        }else{
+            this.crawling = false
+            console.log('There is nothing waiting for crawling')
+        }
+        
+
+    }
+
+    //for testing
+    async crawlOne(post){
+        return await crawl(post)
+    }
+
+    
+}
+
+let crawler = new Crawler(options)
+
+//Set directory watcher
+console.log("Crawler is watching ...")
+watcher
+    .on('add', function(path, stats){
+       crawler.add(path)
+    })
+    .on('unlink', path => console.log(path + " was unlink"))
+
+//Just turn some system function to promise-base
+var fsFuncList = ['readFile', 'writeFile', 'readdir', 'mkdir'];
+const {readFile, writeFile, readDir, mkDir} = ((funcs) => {
+    var funcSet = {}
+    funcs.forEach(func => {
+        funcSet[func] = util.promisify(fs[func])
+    });
+    return funcSet;
+})(fsFuncList);
+
+const wp = new wordProcesser()
+
+
+//readAndCrawl('./waiting/1539951553845.txt')
+
+
+
 
 
 
 async function crawl(post){
     
-    if(!pageMap.has(post["Name"])){
-        console.error(chalk.red("Can't find " + post["Name"] + "in the pageList.config"));
+    if(!pageMap.has(post.name)){
+        console.error(chalk.red("Can't find " + post.name + "in the pageList.config"));
+        return false
     }
-    if(post['Type'] !== 'Link') { return false };
+    if(post.type !== 'Link') { 
+        return false
+    };
 
-    var url = post['Link'];
+    var url = post.link;
     //console.log(url)
     //handle Special case: chinese in url
     var chineseInURL = /pnn.pts.org.tw|www.cmmedia.com.tw/g
@@ -119,30 +182,93 @@ async function crawl(post){
         url = headMatched[0] + str.split('/').map((substr) => urlencode(urlencode.decode(substr))).join('/')
     }
     /////////////
-    try{
-        //await sleep(500)
-        var response = await axios(url, option)
-        var parser = new NewsParser(response.data, pageMap.get(post["Name"]).rules)
-
-        //Do some text processing things
-        //post-article Similarity
-        post.article = parser.getArticle()
-        //if(post.article === "") console.log('Oops')
-        //console.log(post['Link Text'])
-        var postKeywords = post.postKeywords = wp.stopwordFilter(wp.extract(wp.punctuactionFilter(post['Message']), 1000).map( obj => obj.word), stopwords);
-        var articleKeywords = post.articleKeywords = wp.stopwordFilter(wp.extract(wp.punctuactionFilter(post['article']), 1000).map( obj => obj.word), stopwords);
-        post.similarity = wordIntersectRatio( postKeywords, articleKeywords );
-
-    }catch(err){
-        
-        console.error(chalk.red('\n'+err))
-        //console.error(chalk.red(err))
-    }
     
-    //console.log(`\n${post["Name"]} is Done`)
+        //await sleep(500)
+    
+    var response = await axios(url, options)
+    
+    var parser = new NewsParser(response.data, pageMap.get(post.name).rules)
+
+    //Do some text processing things
+    //post-article Similarity
+    post.article = parser.getArticle()
+    
+    ///////////////////////////
+    //If Rule is not working//
+    //////////////////////////
+    if(!post.article){
+        return false
+    }
+    //if(post.article === "") console.log('Oops')
+    //console.log(post['Link Text'])
+    var postKeywords = post.postKeywords = wp.stopwordFilter(wp.extract(wp.punctuactionFilter(post.message), 1000).map( obj => obj.word), stopwords);
+    var articleKeywords = post.articleKeywords = wp.stopwordFilter(wp.extract(wp.punctuactionFilter(post.article), 1000).map( obj => obj.word), stopwords);
+    var similarity = wordIntersectRatio( postKeywords, articleKeywords );
+    post.intersection = similarity.intersectedWords
+    post.ratio = similarity.ratio
+    
+    //console.log(post)
+    //console.log(`\n${post.name} is Done`)
  
-    return post
+    return {
+        name: post.name,
+        sizeAtPosting: post.sizeAtPosting,
+        created: post.created,
+        type: post.type,
+        likes: post.likes,
+        comments: post.comments,
+        shares: post.shares,
+        love: post.love,
+        wow: post.wow,
+        haha: post.haha,
+        sad: post.sad,
+        angry: post.angry,
+        thankful: post.thankful,
+        videoShareStatus: post.videoShareStatus,
+        postViews: post.postViews,
+        totalViews: post.totalViews,
+        totalViewsForAllCrossposts: post.totalViewsForAllCrossposts,
+        url: post.url,
+        message: post.message,
+        link: post.link,
+        finalLink: post.finalLink,
+        linkText: post.linkText,
+        score: post.score,
+        crawlState: "Success", // Waiting | Success | Failed
+        postKeywords: postKeywords,
+        articleKeywords: articleKeywords,
+        intersection: similarity.intersectedWords,
+        ratio: similarity.ratio
+    }
         
+}
+
+function findAndCrawl(id, errorList){
+    let crawledData = null
+    return new Promise(function(resolve, reject){
+
+        Post.find({_id: id}, async function(err, data){
+            if(err) console.error(err);
+            
+           
+            crawledData = await crawl(data[0])
+            
+            if(crawledData){
+                
+                resolve(crawledData)
+                
+            }else{
+                //write in failed list and write in failed dir later
+                console.error(chalk.red('\n' + crawledData))
+                errorList.push(id)
+                resolve(crawledData)
+            }
+        })
+    })
+}
+
+function handleError(err){
+    console.log(err.name)
 }
 
 //crawl(process.argv[2])
