@@ -4,9 +4,9 @@ result.json
 app_config.json
 data/
 .DS_Store
-lib/*
-server/failed/*
-server/waiting/*
+lib/
+server/failed/*.txt
+server/waiting/*.txt
 
 
 pagedata/
