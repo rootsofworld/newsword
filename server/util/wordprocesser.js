@@ -1,17 +1,18 @@
 const nodejieba = require('nodejieba')
 const fs = require('fs')
+const path = require('path')
 
 nodejieba.load({
     dict: nodejieba.DEFAULT_DICT,
     hmmDict: nodejieba.DEFAULT_HMM_DICT,
-    userDict: './config/dict.txt.big',
+    userDict: path.resolve('../server/config/dict.txt.big'),
     idfDict: nodejieba.DEFAULT_IDF_DICT,
-    stopWordDict: './config/stopwords.txt',
+    stopWordDict: path.resolve('../server/config/stopwords.txt'),
   });
 
 function wordProcesser(){
 
-    const stopwordDic = fs.readFileSync('./config/stopwords.txt','utf8')
+    const stopwordDic = fs.readFileSync(path.resolve('../server/config/stopwords.txt'), 'utf8')
 
     this.extract = nodejieba.extract
     this.cut = nodejieba.cut
