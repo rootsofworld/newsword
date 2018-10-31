@@ -25,6 +25,7 @@ const CrawledPost = require('./model/crawledPost.js')
 const Post = require('./model/post.js')
 
 
+const wp = new wordProcesser()
 
 
 var pageMap = new Map()
@@ -149,7 +150,6 @@ const {readFile, writeFile, readDir, mkDir} = ((funcs) => {
     return funcSet;
 })(fsFuncList);
 
-const wp = new wordProcesser()
 
 
 async function crawl(post){

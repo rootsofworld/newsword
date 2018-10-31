@@ -58,16 +58,28 @@ router.post('/', fileUpload(), function(req, res){
                                     id_list.push(post._id)
                                     console.log(post.name + "-" + post.created + " saved in Posts")
                                     count--
-                                    if(count === 0) finish()
+                                    if(count === 0) saveWaitingList()
                                 })
+                            }else if(post[0].crawlState === "Failed"){
+                                console.log(`${post[0]._id}-${post[0].created} was crawl Failed, now try it again.`)
+                                id_list.push(post[0]._id)
+                                count--
+                                if(count === 0) saveWaitingList()
                             }else{
+                                count--
+                                if(count === 0) saveWaitingList()
                                 console.log(row.name + "-" + row.created + " is Already Exist")
                             }
                         })
                     })
                 })
 
-            function finish(){
+            function saveWaitingList(){
+                if(id_list.length === 0){
+                    console.log("[Warning] Don't have data to save")
+                    return;
+                }
+                console.log("Saving waiting list...")
                 fs.writeFile(`waiting/${Date.now()}.txt`, id_list.join('/n'), 'utf8', function(err, data){
                     if(err) console.log(err)
                     //console.log(id_list)
