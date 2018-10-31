@@ -168,22 +168,19 @@
         e.preventDefault()
     })
 
+    var gridOptions = {
+        columnDefs: (mode === 'origin') ? originDef : crawledDef,
+        enableSorting: true,
+        enableFilter: true,
+        enableColResize: true,
+        suppressDragLeaveHidesColumns: true,
+        multiSortKey: 'ctrl'
+    };
 
     //Display Data
     function updateTable(data, mode){
         console.log('update the table')
       
-
-        var gridOptions = {
-            columnDefs: (mode === 'origin') ? originDef : crawledDef,
-            enableSorting: true,
-            enableFilter: true,
-            enableColResize: true,
-            suppressDragLeaveHidesColumns: true,
-            multiSortKey: 'ctrl'
-        };
-
-
         // lookup the container we want the Grid to use
         var eGridDiv = document.querySelector('#data-table');
         //console.log(eGridDiv.children)
@@ -209,6 +206,7 @@
     let download = document.querySelector('#download');
     download.addEventListener('click', exportCSV)
     function exportCSV(){
+        console.log('onclick')
         let params = {
             fileName: makeFileName(),
             processCellCallback: addHyperLink
