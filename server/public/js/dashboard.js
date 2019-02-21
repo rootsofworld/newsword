@@ -83,6 +83,7 @@
         
         if(dataChecker.from === "empty" | dataChecker.to === "empty"){
             alert("Date Cannot be empty")
+            return false;
         }
         
         for(el of fd.entries()) console.log(el)
@@ -157,7 +158,7 @@
                 <i class="tiny material-icons clear">clear</i>
             </div>`).click(function(){
                 //console.log($(this))
-                keywords.pop($(this)[0].children[0].textContent)
+                keywords.splice(keywords.findIndex(e => (e === $(this)[0].children[0].textContent), 1))
                 $(this).remove()
             }).appendTo('#keywords')
         keywordInput.val("")
