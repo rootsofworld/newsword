@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 //const {matchTopic, matchAllFile} = require('../lib/matchTopic.js');
-const db = mongoose.connect("mongodb://sf:105753037@140.119.164.168:27017/admin")
+const db = mongoose.connect("mongodb://")
 //Router
 const uploader = require('./route/upload.js');
 const query = require('./route/query.js')
