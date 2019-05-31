@@ -55,9 +55,9 @@ var options = {
 
 
 let watcher = null;
-checkDirectory(path.resolve(__dirname, './waiting'), (err) => {
-    if(err) throw err;
-    watcher = chokidar.watch(path.resolve(__dirname, './waiting'), {
+waitingListPath = path.resolve(__dirname, './_Waiting');
+if(fs.existsSync(waitingListPath)){
+    watcher = chokidar.watch(waitingListPath, {
         persistent: true
     })
     watcher
@@ -65,10 +65,19 @@ checkDirectory(path.resolve(__dirname, './waiting'), (err) => {
             crawler.add(path)
         })
         .on('unlink', path => console.log(path + " was unlink"))
-})
-checkDirectory(path.resolve(__dirname, './failed'), (err) => {
-    if(err) throw err;
-})
+} else {
+    console.log("_Waiting Directory not Existed, Now Create One")
+    fs.mkdirSync('_Waiting');
+}
+
+failedListPath = path.resolve(__dirname, './_Failed');
+if(!fs.existsSync(failedListPath)){
+    console.log("_Failed Directory not Existed, Now Create One")
+    fs.mkdirSync('_Failed');
+}
+
+
+
     
 class Crawler {
     constructor(options, targets = []){
@@ -159,20 +168,6 @@ const {readFile, writeFile, readDir, mkDir} = ((funcs) => {
     return funcSet;
 })(fsFuncList);
 
-
-function checkDirectory(directory, callback) {  
-    fs.stat(directory, function(err, stats) {
-      //Check if error defined and the error code is "not exists"
-      if (err && err.errno === 34) {
-        //Create the directory, call the callback.
-        console.log("Waiting Directory not Existed, Now Create One")
-        fs.mkdir(directory, callback);
-      } else {
-        //just in case there was a different error:
-        callback(err)
-      }
-    });
-  }
 
 async function crawl(post){
     
