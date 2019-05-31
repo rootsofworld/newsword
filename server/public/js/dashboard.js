@@ -148,7 +148,7 @@
         if(keyword === ""){
             keywordInput.val("")
             return;
-        }else if(keywords.includes(keyword)){
+        } else if(keywords.includes(keyword)) {
             keywordInput.val("")
             return;
         }
@@ -158,7 +158,9 @@
                 <i class="tiny material-icons clear">clear</i>
             </div>`).click(function(){
                 //console.log($(this))
-                keywords.splice(keywords.findIndex(e => (e === $(this)[0].children[0].textContent), 1))
+                keywords = keywords.filter(kw => kw !== $(this)[0].children[0].textContent)
+                console.log(keywords)
+                fd.set('keywords', keywords)
                 $(this).remove()
             }).appendTo('#keywords')
         keywordInput.val("")
@@ -169,17 +171,17 @@
         e.preventDefault()
     })
 
-    var gridOptions = {
-        columnDefs: (mode === 'origin') ? originDef : crawledDef,
-        enableSorting: true,
-        enableFilter: true,
-        enableColResize: true,
-        suppressDragLeaveHidesColumns: true,
-        multiSortKey: 'ctrl'
-    };
-
+    
     //Display Data
     function updateTable(data, mode){
+        var gridOptions = {
+            columnDefs: (mode === 'origin') ? originDef : crawledDef,
+            enableSorting: true,
+            enableFilter: true,
+            enableColResize: true,
+            suppressDragLeaveHidesColumns: true,
+            multiSortKey: 'ctrl'
+        };
         console.log('update the table')
       
         // lookup the container we want the Grid to use

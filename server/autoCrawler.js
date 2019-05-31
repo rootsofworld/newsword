@@ -55,7 +55,7 @@ var options = {
 
 
 let watcher = null;
-waitingListPath = path.resolve(__dirname, './_Waiting');
+waitingListPath = path.resolve('./_Waiting');
 if(fs.existsSync(waitingListPath)){
     watcher = chokidar.watch(waitingListPath, {
         persistent: true
@@ -70,7 +70,7 @@ if(fs.existsSync(waitingListPath)){
     fs.mkdirSync('_Waiting');
 }
 
-failedListPath = path.resolve(__dirname, './_Failed');
+failedListPath = path.resolve('./_Failed');
 if(!fs.existsSync(failedListPath)){
     console.log("_Failed Directory not Existed, Now Create One")
     fs.mkdirSync('_Failed');
@@ -128,7 +128,7 @@ class Crawler {
         
         if(errorList.length !== 0){
             console.log("ERROR Count: " + errorList.length)
-            fs.writeFileSync(path.resolve(__dirname, `./failed/${Date.now()}.txt`), errorList.join('/n'))
+            fs.writeFileSync(path.resolve(`./_Failed/${Date.now()}.txt`), errorList.join('/n'))
         }
         
         fs.unlinkSync(list)

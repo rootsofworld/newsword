@@ -34,7 +34,7 @@ router.post('/origin', multer.none(), function(req, res){
     
     function callback(err, data){
         if(err) throw err;
-        //console.log(data)
+        console.log("Query Data Counts:", data.length)
         res.send(data)
     }
 
