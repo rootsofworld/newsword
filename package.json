@@ -4,11 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "set": "node lib/setSample.js",
     "fb-post": "node lib/getposts.js",
-    "start-dev": "npm run build && node ./server/server.js",
-    "build": "webpack --config ./server/webpack.config.js"
+    "run": "node server.js && node autoCrawler.js"
   },
   "keywords": [],
   "author": "",

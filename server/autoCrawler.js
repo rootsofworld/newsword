@@ -53,8 +53,29 @@ var options = {
     }
 }
 
-let watcher = chokidar.watch('./waiting', {
-    persistent: true
+function checkDirectory(directory, callback) {  
+    fs.stat(directory, function(err, stats) {
+      //Check if error defined and the error code is "not exists"
+      if (err && err.errno === 34) {
+        //Create the directory, call the callback.
+        console.log("Waiting Directory not Existed, Now Create One")
+        fs.mkdir(directory, callback);
+      } else {
+        //just in case there was a different error:
+        callback(err)
+      }
+    });
+  }
+
+  let watcher = null;
+  checkDirectory('./waiting', (err) => {
+      if(err) throw err;
+      watcher = chokidar.watch('./waiting', {
+          persistent: true
+      })
+  })
+  checkDirectory('./failed', (err) => {
+    if(err) throw err;
 })
 
 class Crawler {
