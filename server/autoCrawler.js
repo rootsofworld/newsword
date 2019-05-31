@@ -17,7 +17,7 @@ const getAnonymous = require('./util/getAnonymous.js')
 const hasDoubtfulImageText = require('./util/hasDoubtfulImageText.js')
 const wordIntersectRatio = require('./util/wordIntersectRatio.js')
 const NewsParser = require('./util/newsparser.js')
-const stopwords = fs.readFileSync('./config/stopwords.txt','utf8')
+const stopwords = fs.readFileSync(path.resolve(__dirname, './config/stopwords.txt'), 'utf8')
 /////////////////////////////////////////////////////////////////
 const target = require('./config/pageList.json')
 const db = mongoose.connect("mongodb://sf:105753037@140.119.164.168:27017/admin")
@@ -53,6 +53,113 @@ var options = {
     }
 }
 
+
+let watcher = null;
+checkDirectory(path.resolve(__dirname, './waiting'), (err) => {
+    if(err) throw err;
+    watcher = chokidar.watch(path.resolve(__dirname, './waiting'), {
+        persistent: true
+    })
+    watcher
+        .on('add', function(path, stats){
+            crawler.add(path)
+        })
+        .on('unlink', path => console.log(path + " was unlink"))
+})
+checkDirectory(path.resolve(__dirname, './failed'), (err) => {
+    if(err) throw err;
+})
+    
+class Crawler {
+    constructor(options, targets = []){
+        this.options = options
+        this.waitingList = targets
+        this.crawling = false
+    }
+    
+    add(path){
+        console.log("Add File in waiting List")
+        this.waitingList.push(path)
+        if(!this.crawling){
+            this.crawlFromList()
+        }
+    }
+    
+    //Only call when not crawling
+    async crawlFromList(){
+        this.crawling = true
+        
+        let errorList = []
+        let list = this.waitingList.pop()
+        let content = fs.readFileSync(list, 'utf8').split('/n')
+        
+        for(let i = 0; i < content.length; i++){
+            
+            let id = content[i]
+            let result = await findAndCrawl(id, errorList)
+            
+            if(result){
+                
+                CrawledPost.create(result, function(err, data){
+                    if(err) return handleError(err)
+                    console.log(chalk.green("Create Crawledpost"))
+                    
+                    Post.update({_id: id}, { $set: { crawlState: "Success" } }, (err) => {
+                        if(err) return handleError(err)
+                    })
+                    
+                    console.log("_id: " + id + " has crawled and save in DB")
+                })
+                
+            }else{
+                console.log(chalk.red("NonLink type"))
+            }
+            
+        }
+        
+        if(errorList.length !== 0){
+            console.log("ERROR Count: " + errorList.length)
+            fs.writeFileSync(path.resolve(__dirname, `./failed/${Date.now()}.txt`), errorList.join('/n'))
+        }
+        
+        fs.unlinkSync(list)
+        
+        if(this.waitingList.length > 0){
+            console.log('Find another file. Keep Crawling...')
+            this.crawlFromList()
+        }else{
+            this.crawling = false
+            console.log('There is nothing waiting for crawling')
+        }
+        
+        
+    }
+    
+    //for testing
+    async crawlOne(post){
+        return await crawl(post)
+    }
+    
+    
+}
+
+let crawler = new Crawler(options)
+    
+//Set directory watcher
+console.log("Crawler is watching ...")
+
+
+//Just turn some system function to promise-base
+var fsFuncList = ['readFile', 'writeFile', 'readdir', 'mkdir'];
+const {readFile, writeFile, readDir, mkDir} = ((funcs) => {
+    var funcSet = {}
+    funcs.forEach(func => {
+        funcSet[func] = util.promisify(fs[func])
+    });
+    return funcSet;
+})(fsFuncList);
+
+
 function checkDirectory(directory, callback) {  
     fs.stat(directory, function(err, stats) {
       //Check if error defined and the error code is "not exists"
@@ -67,112 +174,6 @@ function checkDirectory(directory, callback) {
     });
   }
 
-  let watcher = null;
-  checkDirectory('./waiting', (err) => {
-      if(err) throw err;
-      watcher = chokidar.watch('./waiting', {
-          persistent: true
-      })
-  })
-  checkDirectory('./failed', (err) => {
-    if(err) throw err;
-})
-
-class Crawler {
-    constructor(options, targets = []){
-        this.options = options
-        this.waitingList = targets
-        this.crawling = false
-    }
-
-    add(path){
-        console.log("Add File in waiting List")
-        this.waitingList.push(path)
-        if(!this.crawling){
-            this.crawlFromList()
-        }
-    }
-
-    //Only call when not crawling
-    async crawlFromList(){
-        this.crawling = true
-
-        let errorList = []
-        let list = this.waitingList.pop()
-        let content = fs.readFileSync(list, 'utf8').split('/n')
-        
-        for(let i = 0; i < content.length; i++){
-
-            let id = content[i]
-            let result = await findAndCrawl(id, errorList)
-
-            if(result){
-
-                CrawledPost.create(result, function(err, data){
-                    if(err) return handleError(err)
-                    console.log(chalk.green("Create Crawledpost"))
-
-                    Post.update({_id: id}, { $set: { crawlState: "Success" } }, (err) => {
-                        if(err) return handleError(err)
-                    })
-
-                    console.log("_id: " + id + " has crawled and save in DB")
-                })
-                
-            }else{
-                console.log(chalk.red("NonLink type"))
-            }
-            
-        }
-
-        if(errorList.length !== 0){
-            console.log("ERROR Count: " + errorList.length)
-            fs.writeFileSync(`./failed/${Date.now()}.txt`, errorList.join('/n'))
-        }
-        
-        fs.unlinkSync(list)
-
-        if(this.waitingList.length > 0){
-            console.log('Find another file. Keep Crawling...')
-            this.crawlFromList()
-        }else{
-            this.crawling = false
-            console.log('There is nothing waiting for crawling')
-        }
-        
-
-    }
-
-    //for testing
-    async crawlOne(post){
-        return await crawl(post)
-    }
-
-    
-}
-
-let crawler = new Crawler(options)
-
-//Set directory watcher
-console.log("Crawler is watching ...")
-watcher
-    .on('add', function(path, stats){
-       crawler.add(path)
-    })
-    .on('unlink', path => console.log(path + " was unlink"))
-
-//Just turn some system function to promise-base
-var fsFuncList = ['readFile', 'writeFile', 'readdir', 'mkdir'];
-const {readFile, writeFile, readDir, mkDir} = ((funcs) => {
-    var funcSet = {}
-    funcs.forEach(func => {
-        funcSet[func] = util.promisify(fs[func])
-    });
-    return funcSet;
-})(fsFuncList);
-
-
-
 async function crawl(post){
     
     if(!pageMap.has(post.name)){
@@ -182,7 +183,7 @@ async function crawl(post){
     if(post.type !== 'Link') { 
         return false
     };
-
+    
     var url = post.link;
     //console.log(url)
     //handle Special case: chinese in url

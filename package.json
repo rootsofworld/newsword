@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "fb-post": "node lib/getposts.js",
-    "run": "node server.js && node autoCrawler.js"
+    "autocrawler": "node ./server/autoCrawler.js",
+    "server": "node ./server/server.js",
+    "start": "concurrently \"npm run autocrawler\" \"npm run server\""
   },
   "keywords": [],
   "author": "",
