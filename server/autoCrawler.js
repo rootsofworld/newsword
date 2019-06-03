@@ -20,7 +20,7 @@ const NewsParser = require('./util/newsparser.js')
 const stopwords = fs.readFileSync(path.resolve(__dirname, './config/stopwords.txt'), 'utf8')
 /////////////////////////////////////////////////////////////////
 const target = require('./config/pageList.json')
-const db = mongoose.connect("mongodb://{Username:Password}@140.119.164.168:27017/admin")
+const db = mongoose.connect("mongodb://sf:105753037@140.119.164.168:27017/admin")
 const CrawledPost = require('./model/crawledPost.js')
 const Post = require('./model/post.js')
 

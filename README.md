@@ -12,4 +12,5 @@
 # Use
     //server
     npm install
+    npm i -g concurrently
     npm run start
