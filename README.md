@@ -10,8 +10,4 @@
 # Use
     //server
     npm install
-    cd server
-    node server.js
-    
-    //autocrawler
-    node autoCrawler.js
+    npm run start
