@@ -122,7 +122,7 @@ class Crawler {
                 })
                 
             }else{
-                console.log(chalk.red("NonLink type"))
+                console.log(chalk.red("NonLink type or Rule not working"))
             }
             
         }
