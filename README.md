@@ -1,7 +1,9 @@
 # Function
 * Upload csv file from crowdtangle
-* Auto crawl news article from link-type post
-* Query data & Export to csv
+* When upload success, put the file's content in _Waiting directory
+* Auto crawl news content from the posts in _Waiting dir
+* If crawl failed, put failed post in _Failed dir
+* CLIENT: Query data & keyword filter & Export to csv
 
 # Requirement
 * Node.js v8.9.4
