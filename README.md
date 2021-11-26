@@ -1,3 +1,5 @@
+![preview](https://github.com/rootsofworld/newsword/blob/ab140f14ea3dc2d8e925a5070d5f6d0630d35dde/asset/view.png)
+![table](https://github.com/rootsofworld/newsword/blob/ab140f14ea3dc2d8e925a5070d5f6d0630d35dde/asset/table.png)
 # Function
 * Upload csv file from crowdtangle
 * When upload success, put the file's content in _Waiting directory
