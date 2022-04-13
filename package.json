@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "async": "^2.6.1",
+    "async": "^3.2.2",
     "axios": "^0.17.1",
     "axios-https-proxy-fix": "^0.17.1",
     "chalk": "^2.4.1",
